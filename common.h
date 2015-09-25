@@ -11,6 +11,9 @@ using namespace std;
 #include <algorithm>
 #include <windows.h>
 #include<fstream>
+#include<ctime>
 #include<time.h>
 #include<math.h>
+#define M 3 // (the number of candidates)
+#define N 3 // (the number of voters)
 #endif
