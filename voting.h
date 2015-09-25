@@ -25,6 +25,22 @@ class Voting
 		}
 		int Condorcet_Voting()
 		{
+			int small_win[M][N] = {0};
+			int big_win[M] = {0};
+			for (int j = 1; j <= N; j++)
+			{
+				for (int i = 1; i <= M - 1; i++)
+					for (int h = i + 1; h <= M; h++)
+						if (t[i][j] >= t[h][j]) small_win[i][h]++;
+						else small_win[h][i]++;
+			}
+			for (int i = 1; i <= M; i++)
+				for (int j = 1; j <= M; j++)
+				{
+					if (i == j) continue;
+					big_win[i]
+
+				}
 
 		}
 
