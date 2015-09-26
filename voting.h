@@ -16,14 +16,49 @@ class Voting
 		int voting(int k)
 		{
 			srand((unsigned)time(NULL));
-			if(k==2) return Comulative_Voting();
+			if(k==2) return Cumulative_Voting();
 			else if(k==3) return Condorcet_Voting();
 			else {cout<<"error"<<endl;return 0;}
 		}
-		int Comulative_Voting()
+
+		int Cumulative_Voting()
 		{
-			return 0;
+			float small_score[M+1][N+1]={0};
+			float big_score[M+1]={0};
+			float max_score = 0;//record the score of final winner
+			vector<int> winners;
+			float sum=0;
+			//change 0 to 1
+			for(int i=1;i<=M;i++)
+				for(int j=1;j<=N;j++)
+					if(t[i][j]==0) t[i][j]=1;
+
+			for(int j=1;j<=N;j++)
+			{
+				for(int i=1;i<=M;i++)
+					sum+=1/t[i][j];
+				for(int i=1;i<=M;i++)
+					small_score[i][j]=(1/t[i][j])/sum;
+			}
+			for(int i=1;i<=M;i++)
+				for(int j=1;j<=N;j++)
+					big_score[i]+=small_score[i][j];
+
+			//find the NO.1 and if there is more than 1 person, return the random one
+			max_score = big_score[1];
+			for (int i = 2; i <= M; i++)
+				if (big_score[i] >= big_score[i - 1]) max_score = big_score[i];
+			for (int i = 1; i <= M; i++)
+				if (big_score[i] == max_score) winners.push_back(i);
+			if (winners.size() == 1) return winners[0];
+			else
+			{
+				int randnum;
+				randnum = rand() % winners.size();
+				return winners[randnum];
+			}
 		}
+
 		int Condorcet_Voting()
 		{
 			int small_win[M + 1][N + 1] = { 0 };
@@ -54,7 +89,7 @@ class Voting
 			else
 			{
 				int randnum;
-				randnum = rand() % winners.size() + 1;
+				randnum = rand() % winners.size();
 				return winners[randnum];
 			}
 		}
