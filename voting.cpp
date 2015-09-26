@@ -16,7 +16,7 @@ int main()
 		cout << endl;
 	}
 	Voting vv(table);
-	winner=vv.voting(2);
+	winner=vv.voting(3);
 	cout << "winner is" << endl;
 	cout << winner << endl;
 	getchar();

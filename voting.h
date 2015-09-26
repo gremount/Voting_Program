@@ -69,7 +69,7 @@ class Voting
 			{
 				for (int i = 1; i <= M - 1; i++)
 					for (int h = i + 1; h <= M; h++)
-						if (t[i][j] >= t[h][j]) small_win[i][h]++;
+						if (t[i][j] <= t[h][j]) small_win[i][h]++;
 						else small_win[h][i]++;
 			}
 			for (int i = 1; i <= M; i++)
