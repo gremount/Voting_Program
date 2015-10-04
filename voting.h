@@ -47,8 +47,6 @@ class Voting
 			else {cout<<"error"<<endl;return 0;}
 		}
 
-		
-
 		int Cumulative_Voting()
 		{
 			float small_score[M+1][N+1]={0};
@@ -75,7 +73,7 @@ class Voting
 			//find the NO.1 and if there is more than 1 person, return the random one
 			max_score = big_score[1];
 			for (int i = 2; i <= M; i++)
-				if (big_score[i] >= big_score[i - 1]) max_score = big_score[i];
+				if (big_score[i] >= max_score) max_score = big_score[i];
 			for (int i = 1; i <= M; i++)
 				if (big_score[i] == max_score) winners.push_back(i);
 			if (winners.size() == 1) return winners[0];
@@ -102,11 +100,11 @@ class Voting
 						if (t[i][j] <= t[h][j]) small_win[i][h]++;
 						else small_win[h][i]++;
 			}
-			for (int i = 1; i <= M; i++)
+			for (int i = 1; i <= M-1; i++)
 				for (int j = i+1; j <= M; j++)
 				{
 					if (i == j) continue;
-					if(small_win[i][j]<ceil((M-1)/2.0)) 
+					if(small_win[i][j]<ceil(N/2.0)) 
 					{
 						pair<int, int> p0(j,i);
 						pair<int, pair<int,int> > p((M-1-small_win[i][j]),p0);
@@ -176,8 +174,14 @@ class Voting
 				int flag=0;//flag=1 --> has circle or flag=0--> no circle
 				for(int i=1;i<=nodes_num;i++)
 					if(nodes[i]->degree_in!=0){flag=1;break;}
-					if(flag==1) {(nodes[incident_list.back()->dst]->degree_in)--;incident_list.pop_back();break;}
+				if(flag==1) {incident_list.pop_back();break;}
 			}
+			//记录所有点的入度
+			list<Edge*>::iterator it,iend;
+			it=incident_list.begin();
+			iend=incident_list.end();
+			for(;it!=iend;it++)
+    			nodes[(*it)->dst]->degree_in++;
 			for(int i=1;i<=M;i++)
 				if(nodes[i]->degree_in==0){winner=i;break;}
 			return winner;
@@ -195,20 +199,24 @@ class Voting
 			{
 				for (int i = 1; i <= M - 1; i++)
 					for (int h = i + 1; h <= M; h++)
-						if (t[i][j] <= t[h][j]) small_win[i][h]++;
+						if (t[i][j] <= t[h][j]) small_win[i][h]++;//越小越好
 						else small_win[h][i]++;
 			}
 			for (int i = 1; i <= M; i++)
 				for (int j = 1; j <= M; j++)
 				{
 					if (i == j) continue;
-					big_win[i] = big_win[i] + small_win[i][j];
+					//胜利+1，平均+0，失败-1
+					if(small_win[i][j]>small_win[j][i])
+						big_win[i] = big_win[i] + 1;
+					else if(small_win[i][j]<small_win[j][i])
+						big_win[i] = big_win[i] - 1;
 				}
 
 			//find the NO.1 and if there is more than 1 person, return the random one
 			max_win = big_win[1];
 			for (int i = 2; i <= M; i++)
-				if (big_win[i] >= big_win[i - 1]) max_win = big_win[i];
+				if (big_win[i] >= max_win) max_win = big_win[i];
 			for (int i = 1; i <= M; i++)
 				if (big_win[i] == max_win) winners.push_back(i);
 			if (winners.size() == 1) return winners[0];
