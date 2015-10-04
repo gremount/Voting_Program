@@ -15,9 +15,17 @@ int main()
 			cout << table[i][j] << " ";
 		cout << endl;
 	}
+	cout << endl;
+	cout << "results are:"<<endl;
 	Voting vv(table);
+	winner=vv.voting(2);
+	cout << "k=2 winner is" << endl;
+	cout << winner << endl;
 	winner=vv.voting(3);
-	cout << "winner is" << endl;
+	cout << "k=3 winner is" << endl;
+	cout << winner << endl;
+	winner=vv.voting(4);
+	cout << "k=4 winner is" << endl;
 	cout << winner << endl;
 	getchar();
 	return 0;

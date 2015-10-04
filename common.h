@@ -14,6 +14,6 @@ using namespace std;
 #include<ctime>
 #include<time.h>
 #include<math.h>
-#define M 3 // (the number of candidates)
-#define N 3 // (the number of voters)
+#define M 5 // (the number of candidates)
+#define N 5 // (the number of voters)
 #endif
