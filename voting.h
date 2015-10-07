@@ -1,6 +1,6 @@
 #include "common.h"
 //M is the number of candidates
-//N is the number of voters
+//N is how many kinds of ranking
 
 class Node
 {
@@ -32,8 +32,11 @@ class Voting
 	private:
 	public:
 		float t[M+1][N+1];
-		Voting(float table[M + 1][N + 1])
+		int rank[N+1];
+		Voting(float table[M + 1][N + 1], int ranking[N+1])
 		{
+			for(int i=1;i<=N;i++)
+				rank[i]=ranking[i];
 			for(int i=1;i<=M;i++)
 				for(int j=1;j<=N;j++)
 					t[i][j]=table[i][j];
@@ -41,15 +44,80 @@ class Voting
 		int voting(int k)
 		{
 			srand((unsigned)time(NULL));
-			if(k==2) return Cumulative_Voting();
+			if(k==1) return Schulze_Voting();
+			else if(k==2) return Cumulative_Voting();
 			else if(k==3) return Condorcet_Voting();
 			else if(k==4) return Ranked_Pairs_Voting();
 			else {cout<<"error"<<endl;return 0;}
 		}
 
+		int Schulze_Voting()
+		{
+			int d[M + 1][M + 1] = { 0 };
+			int p[M+1][M+1]={0};
+			int max_win = 0;//record the score of final winner
+			vector<int> winners;
+			for (int j = 1; j <= N; j++)
+			{
+				for (int i = 1; i <= M - 1; i++)
+					for (int h = i + 1; h <= M; h++)
+						if (t[i][j] <= t[h][j]) d[i][h]+=rank[j];//排名数字越小越好
+						else d[h][i]+=rank[j];
+			}
+
+			//the initial of p[i][j]
+			for(int i=1;i<=M;i++)
+			{
+				for(int j=1;j<=M;j++)
+					if(i!=j)
+					{
+						if(d[i][j]>=d[j][i])
+							p[i][j]=d[i][j];
+						else
+							p[i][j]=0;
+					}
+			}
+
+			//floyd
+			for(int k=1;k<=M;k++)
+			{
+				for(int i=1;i<=M;i++)
+				{
+					if(i==k)continue;
+					for(int j=1;j<=M;j++)
+					{
+						if(j==k || j==i)continue;
+						p[i][j]=max(p[i][j],min(p[i][k],p[k][j]));
+					}
+				}
+			}
+
+			//find the winner
+			int beat[M+1]={0};
+			for(int i=1;i<=M;i++)
+			{
+				for(int j=1;j<=M;j++)
+				{
+					if(i==j) continue;
+					if(p[i][j]>=p[j][i]) beat[i]++;
+				}
+			}
+
+			//for(int j=1;j<=M;j++)
+			//	if(beat[j]==M-1)return j;
+
+			for(int i=M-1;i>=1;i--)
+			{
+				for(int j=1;j<=M;j++)
+					if(beat[j]==i) return j;
+			}
+			cout<<"no winner"<<endl;
+			return 0;
+		}
+
 		int Cumulative_Voting()
 		{
-			float small_score[M+1][N+1]={0};
+			float small_score[M+1][M+1]={0};
 			float big_score[M+1]={0};
 			float max_score = 0;//record the score of final winner
 			vector<int> winners;
@@ -87,7 +155,7 @@ class Voting
 
 		int Ranked_Pairs_Voting()
 		{
-			int small_win[M + 1][N + 1] = { 0 };
+			int small_win[M + 1][M + 1] = { 0 };
 			int big_win[M + 1] = { 0 };
 			int max_win = 0;//record the score of final winner
 			vector<int> winners;
@@ -191,7 +259,7 @@ class Voting
 
 		int Condorcet_Voting()
 		{
-			int small_win[M + 1][N + 1] = { 0 };
+			int small_win[M + 1][M + 1] = { 0 };
 			int big_win[M + 1] = { 0 };
 			int max_win = 0;//record the score of final winner
 			vector<int> winners;
@@ -227,4 +295,6 @@ class Voting
 				return winners[randnum];
 			}
 		}
+
+		
 };
