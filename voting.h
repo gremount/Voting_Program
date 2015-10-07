@@ -103,9 +103,6 @@ class Voting
 				}
 			}
 
-			//for(int j=1;j<=M;j++)
-			//	if(beat[j]==M-1)return j;
-
 			for(int i=M-1;i>=1;i--)
 			{
 				for(int j=1;j<=M;j++)
@@ -117,7 +114,7 @@ class Voting
 
 		int Cumulative_Voting()
 		{
-			float small_score[M+1][M+1]={0};
+			float small_score[M+1][N+1]={0};
 			float big_score[M+1]={0};
 			float max_score = 0;//record the score of final winner
 			vector<int> winners;
@@ -136,7 +133,7 @@ class Voting
 			}
 			for(int i=1;i<=M;i++)
 				for(int j=1;j<=N;j++)
-					big_score[i]+=small_score[i][j];
+					big_score[i]+=small_score[i][j]*rank[j];
 
 			//find the NO.1 and if there is more than 1 person, return the random one
 			max_score = big_score[1];
@@ -165,8 +162,8 @@ class Voting
 			{
 				for (int i = 1; i <= M - 1; i++)
 					for (int h = i + 1; h <= M; h++)
-						if (t[i][j] <= t[h][j]) small_win[i][h]++;
-						else small_win[h][i]++;
+						if (t[i][j] <= t[h][j]) small_win[i][h]+=rank[j];
+						else small_win[h][i]+=rank[j];
 			}
 			for (int i = 1; i <= M-1; i++)
 				for (int j = i+1; j <= M; j++)
@@ -267,8 +264,8 @@ class Voting
 			{
 				for (int i = 1; i <= M - 1; i++)
 					for (int h = i + 1; h <= M; h++)
-						if (t[i][j] <= t[h][j]) small_win[i][h]++;//越小越好
-						else small_win[h][i]++;
+						if (t[i][j] <= t[h][j]) small_win[i][h]+=rank[j];//越小越好
+						else small_win[h][i]+=rank[j];
 			}
 			for (int i = 1; i <= M; i++)
 				for (int j = 1; j <= M; j++)
